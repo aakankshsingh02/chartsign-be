@@ -8,7 +8,12 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const User = require('./models/user');
-const indexRoutes = require('./routes/index');
+const loginRoutes = require('./routes/User/login');
+const registerRoutes = require('./routes/User/register');
+const userRoutes = require('./routes/User/users');
+const deleteUserRoutes = require('./routes/User/deleteUser');
+var cors = require('cors');
+
 
 const app = express();
 
@@ -18,6 +23,14 @@ mongoose.connect('mongodb://localhost/chartsign-login', {
 });
 
 app.set('view engine', 'ejs');
+
+const corsOptions = {
+    origin: '*', // Replace '*' with specific origin(s) as needed, e.g., 'http://example.com'
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -43,7 +56,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(indexRoutes);
+app.use(loginRoutes);
+app.use(registerRoutes);
+app.use(userRoutes);
+app.use(deleteUserRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
