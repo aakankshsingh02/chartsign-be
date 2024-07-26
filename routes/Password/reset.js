@@ -2,9 +2,26 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../models/user');
 
-router.post('/api/reset/:token', async (req, res) => {
-    const { password } = req.body;
+// Verify token route
+router.get('/api/reset/:token', async (req, res) => {
+    try {
+        const user = await User.findOne({
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: { $gt: Date.now() } // Check token is not expired
+        });
 
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Password reset token is invalid or has expired' });
+        }
+        
+        res.status(200).json({ success: true, message: 'Token is valid', userIdentifier: user.username || user.email });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+});
+
+// Reset password route
+router.post('/api/reset/:token', async (req, res) => {
     try {
         const user = await User.findOne({
             resetPasswordToken: req.params.token,
@@ -15,18 +32,18 @@ router.post('/api/reset/:token', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Password reset token is invalid or has expired' });
         }
 
-        user.setPassword(password, async (err) => {
-            if (err) {
-                return res.status(500).json({ success: false, message: 'Error resetting password', error: err.message });
-            }
+        if (!req.body.password) {
+            return res.status(400).json({ success: false, message: 'Password is required' });
+        }
 
-            user.resetPasswordToken = undefined;
-            user.resetPasswordExpires = undefined;
+        // Update the user's password
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
 
-            await user.save();
+        await user.save();
 
-            res.status(200).json({ success: true, message: 'Password has been reset successfully' });
-        });
+        res.status(200).json({ success: true, message: 'Password has been reset' });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
