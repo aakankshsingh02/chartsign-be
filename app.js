@@ -12,20 +12,19 @@ const loginRoutes = require('./routes/User/login');
 const registerRoutes = require('./routes/User/register');
 const userRoutes = require('./routes/User/users');
 const deleteUserRoutes = require('./routes/User/deleteUser');
+const forgotPasswordRoutes = require('./routes/Password/forgot');
+const resetPasswordRoutes = require('./routes/Password/reset'); 
 var cors = require('cors');
 
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/chartsign-login', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_URI);
 
 app.set('view engine', 'ejs');
 
 const corsOptions = {
-    origin: '*', // Replace '*' with specific origin(s) as needed, e.g., 'http://example.com'
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization'
 };
@@ -60,6 +59,8 @@ app.use(loginRoutes);
 app.use(registerRoutes);
 app.use(userRoutes);
 app.use(deleteUserRoutes);
+app.use(forgotPasswordRoutes);
+app.use(resetPasswordRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
