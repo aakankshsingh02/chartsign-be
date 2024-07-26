@@ -17,15 +17,12 @@ var cors = require('cors');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/chartsign-login', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_URI);
 
 app.set('view engine', 'ejs');
 
 const corsOptions = {
-    origin: '*', // Replace '*' with specific origin(s) as needed, e.g., 'http://example.com'
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization'
 };
