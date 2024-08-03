@@ -11,7 +11,7 @@ router.post('/api/login', (req, res, next) => {
         req.logIn(user, async (err) => {
             if (err) return res.status(500).json({ success: false, message: 'Server error' });
             
-            const loggedInUser = await User.findById(user._id).select('username name email role designation');
+            const loggedInUser = await User.findById(user._id).select('username name email role designation ');
             res.status(200).json({
                 success: true,
                 message: 'Logged in successfully',

@@ -4,7 +4,7 @@ const User = require('../../models/user');
 
 router.get('/api/users', async (req, res) => {
     try {
-        const users = await User.find({}, 'username name email role designation');
+        const users = await User.find({}, 'username name email role designation payrate active');
         
         res.status(200).json({
             success: true,

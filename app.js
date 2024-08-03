@@ -14,6 +14,8 @@ const userRoutes = require('./routes/User/users');
 const deleteUserRoutes = require('./routes/User/deleteUser');
 const forgotPasswordRoutes = require('./routes/Password/forgot');
 const resetPasswordRoutes = require('./routes/Password/reset'); 
+const changePasswordRoutes = require('./routes/Password/changepassword');
+const editUserRoutes = require('./routes/User/editUser');
 var cors = require('cors');
 
 
@@ -61,6 +63,8 @@ app.use(userRoutes);
 app.use(deleteUserRoutes);
 app.use(forgotPasswordRoutes);
 app.use(resetPasswordRoutes);
+app.use(changePasswordRoutes);
+app.use(editUserRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
